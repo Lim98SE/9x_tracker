@@ -68,9 +68,17 @@ clock = pygame.time.Clock()
 
 request = requests.get(req)
 
-subcount = int(request.json()["items"][0]["statistics"]["subscriberCount"])
-viewcount = int(request.json()["items"][0]["statistics"]["viewCount"])
-vidcount = int(request.json()["items"][0]["statistics"]["viewCount"])
+try:
+
+    subcount = int(request.json()["items"][0]["statistics"]["subscriberCount"])
+    viewcount = int(request.json()["items"][0]["statistics"]["viewCount"])
+    vidcount = int(request.json()["items"][0]["statistics"]["viewCount"])
+
+except:
+
+    subcount = 0
+    viewcount = 0
+    vidcount = 0
 
 last_subcount = subcount
 fanfare = pygame.mixer.Sound("fanfare.mp3")
@@ -83,6 +91,7 @@ font = pygame.font.SysFont("JetBrains Mono Regular", 24, bold=False)
 frames_since_update = 0
 
 start = time.time()
+update_time = time.time()
 mode = 0
 
 while True:
@@ -91,12 +100,13 @@ while True:
             pygame.quit()
             sys.exit(0)
 
-    if time.time() > start + 5: # cycle mode
+    if time.time() > start + 60: # cycle mode
         mode += 1
         mode %= 3
         start = time.time()
-    
-    request = requests.get(req)
+
+    if time.time() > update_time + 5:
+        request = requests.get(req)
 
     window.fill((255, 255, 255))
 
@@ -105,10 +115,14 @@ while True:
 
     borderRect = pygame.Rect((0, 0), window.get_size())
     pygame.draw.rect(window, (255, 255, 255), borderRect, 4)
-    
-    subcount = int(request.json()["items"][0]["statistics"]["subscriberCount"])
-    viewcount = int(request.json()["items"][0]["statistics"]["viewCount"])
-    vidcount = int(request.json()["items"][0]["statistics"]["videoCount"])
+
+    try:
+        subcount = int(request.json()["items"][0]["statistics"]["subscriberCount"])
+        viewcount = int(request.json()["items"][0]["statistics"]["viewCount"])
+        vidcount = int(request.json()["items"][0]["statistics"]["videoCount"])
+
+    except:
+        pass
     
     if subcount > last_subcount:
         last_subcount = subcount
