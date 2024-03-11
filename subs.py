@@ -100,13 +100,21 @@ while True:
             pygame.quit()
             sys.exit(0)
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                mode += 1
+                mode %= 3
+        
     if time.time() > start + 60: # cycle mode
         mode += 1
         mode %= 3
         start = time.time()
 
     if time.time() > update_time + 5:
+        print("Update!")
         request = requests.get(req)
+        update_time = time.time()
+        print(request.json())
 
     window.fill((255, 255, 255))
 
